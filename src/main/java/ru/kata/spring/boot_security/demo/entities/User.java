@@ -24,12 +24,15 @@ public class User implements UserDetails {
     private Long id;
 
     @Column(unique = true)
+    @NotEmpty(message = "name should not be empty")
     private String username;
 
 
     private String password;
 
 
+    @Email
+    @NotEmpty(message = "Email should not be empty")
     private String email;
     @ManyToMany
     @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))

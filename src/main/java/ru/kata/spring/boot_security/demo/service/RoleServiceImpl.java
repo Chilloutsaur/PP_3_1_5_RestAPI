@@ -11,7 +11,7 @@ import java.util.List;
 
 @Service
 @Transactional
-public class RoleService {
+public class RoleServiceImpl {
     @Autowired
    private RoleRepository roleRepository;
 

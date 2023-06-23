@@ -36,6 +36,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 successHandler(successUserHandler);
     }
 
+
+
+
+
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();

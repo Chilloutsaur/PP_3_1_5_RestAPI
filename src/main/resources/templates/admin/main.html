@@ -4,12 +4,13 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <title>Admin panel</title>
 </head>
+
+<!--NAVBAR-->
 <body class="bg-light h-100">
 <div th:replace="fragments/navBar :: navBar"></div>
 <div class="container-fluid bg-light" style="padding-top: 20px; height: calc(100vh - 50px)">
@@ -30,8 +31,11 @@
                 </ul>
             </div>
         </nav>
+
+        <!--                                              ADMIN PANEL                               -->
         <main role="main" class="col-md-10 ml-sm-auto col-lg-10" style="padding-right: 28px; padding-left: 28px">
             <h1>Admin panel</h1>
+
             <ul class="nav nav-tabs pt-2">
                 <li class="nav-item">
                     <a class="nav-link active" href="/admin">Users table</a>
@@ -40,10 +44,13 @@
                     <a class="nav-link" href="/admin/newUser">New User</a>
                 </li>
             </ul>
+
             <ul class="list-group">
                 <li class="list-group-item" style="font-weight: bold; font-size: large; background-color: whitesmoke">
                     All users
                 </li>
+
+                <!--                TABLE                 -->
                 <li class="list-group-item p-4">
                     <table class="table table-striped">
                         <thead>
@@ -56,9 +63,11 @@
                             <th>Delete</th>
                         </tr>
                         </thead>
+
+
+                        <!--                        TABLE BODY                        -->
                         <tbody>
                         <th:block th:each="u : ${users}">
-
                             <tr>
                                 <td th:utext="${u.getId}">...</td>
                                 <td th:utext="${u.getUsername}">...</td>
@@ -74,8 +83,9 @@
                             </tr>
                         </th:block>
                         </tbody>
-                    </table>
 
+
+                    </table>
                 </li>
             </ul>
 
@@ -98,8 +108,8 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
-
 <script>
+
     $('document').ready(function () {
         $(".editButton").on('click', function (event) {
             event.preventDefault()
