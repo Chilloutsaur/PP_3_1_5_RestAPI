@@ -9,6 +9,10 @@
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <title>Admin panel</title>
 </head>
+<style>
+
+</style>
+
 
 <!--NAVBAR-->
 <body class="bg-light h-100">
@@ -41,7 +45,7 @@
                     <a class="nav-link active" href="/admin">Users table</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/admin/newUser">New User</a>
+                    <a class="nav-link" href="">New User</a>
                 </li>
             </ul>
 
@@ -66,32 +70,45 @@
 
 
                         <!--                        TABLE BODY                        -->
-                        <tbody>
-                        <th:block th:each="u : ${users}">
-                            <tr>
-                                <td th:utext="${u.getId}">...</td>
-                                <td th:utext="${u.getUsername}">...</td>
-                                <td th:utext="${u.getEmail()}">...</td>
-                                <td th:utext="${u.getRoles}">...</td>
-                                <td><a type="button" class="btn btn-info py-1 editButton"
-                                       th:href="@{/admin/edit/{id} (id=${u.getId})}">Edit</a></td>
-
-                                <td>
-                                    <a type="button" class="btn btn-danger py-1 deleteButton"
-                                       data-toggle="modal" th:href="@{/admin/delete/{id} (id=${u.getId})}">Delete</a>
-                                </td>
-                            </tr>
-                        </th:block>
+                        <tbody id="tbody">
                         </tbody>
-
-
                     </table>
+                </li>
+
+
+                <!--                NEW USER FORM-->
+
+                <li class="list-group-item p-4" id="newUser">
+                    <form class="text-center mx-auto" style="font-weight: bold; max-width: 300px"
+                          id="newUserForm">
+                        <div class="form-group">
+                            <label for="newUsername">Username</label>
+                            <input type="text" class="form-control" id="newUsername" placeholder="Username"
+                                   name="username">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="newEmail">Email</label>
+                            <input type="text" class="form-control" id="newEmail" placeholder="Email"
+                                   name="Email">
+                        </div>
+                        <div class="form-group">
+                            <label for="newPassword" id="formPassword">Password</label>
+                            <input type="password" class="form-control" id="newPassword" placeholder="Password"
+                                   name="password">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="newRole">Role</label>
+                            <select multiple class="custom-select" size="2" id="newRole" name="roles"></select>
+                        </div>
+
+                        <button type="submit" id="newUserBtn" class="btn btn-success">Add new user</button>
+                    </form>
                 </li>
             </ul>
 
-            <!--MODALS-->
-            <div th:replace="fragments/deleteModal"></div>
-            <div th:replace="fragments/editModal"></div>
+
         </main>
     </div>
 </div>
@@ -108,39 +125,43 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
+
 <script>
+    async function main() {
+        const principalURL = "http://localhost:8080/admin/principal";
+        const usersURL = "http://localhost:8080/admin/users";
+        const principalFetch = await fetch(principalURL)
+        const newUserURL = "http://localhost:8080/admin/newUser"
+        let principal = await principalFetch.json()
+        let usersFetch = await fetch(usersURL)
+        let users = await usersFetch.json()
 
-    $('document').ready(function () {
-        $(".editButton").on('click', function (event) {
-            event.preventDefault()
-            let href = $(this).attr('href');
-            $.get(href, function (user, status) {
-                $('#editId').val(user.id)
-                $('#editUsername').val(user.username)
-                $('#editEmail').val(user.email)
-                $('#editPassword').val("")
-                $('#editRole').val(user.role)
-                $("#editForm").attr('action', href)
-            })
-            $('#editModal').modal()
+        function getRoles(user) {
+            return user.roles.map(role => role['name'])
+        }
+
+        $("document").ready(async function () {
+            $('.nav-username').append(principal.username)
+            $('.nav-roles').append(JSON.stringify(getRoles(principal))) //
+            for (let i = 0; i < users.length; i++) {
+                $('#tbody').append(
+                    `<tr>
+                    <td>${users[i].id}</td>
+                    <td>${users[i].username}</td>
+                    <td>${users[i].email}</td>
+                    <td>${getRoles(users[i])}</td>
+                    <td> <button type="button" class="btn btn-info py-1"  id= "editButton"> Edit</button></td>
+                    <td> <button type="button" class="btn btn-danger" id="deleteBtn">Delete</button></td>
+                </tr>`)
+            }
         })
+    }
+
+    main()
 
 
-        $(".deleteButton").on('click', function (event) {
-            event.preventDefault()
-
-            let href = $(this).attr('href');
-
-            $.get(href, function (user, status) {
-                $('#deleteId').val(user.id)
-                $('#deleteUsername').val(user.username)
-                $('#deleteEmail').val(user.email)
-                $('#deleteRole').val(user.role)
-            })
-            $("#deleteForm").attr('action', href)
-            $('#deleteModal').modal()
-        })
-    })
 </script>
+
+
 </body>
 </html>
