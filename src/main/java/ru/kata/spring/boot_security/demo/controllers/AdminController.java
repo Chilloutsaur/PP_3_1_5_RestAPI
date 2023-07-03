@@ -68,7 +68,7 @@ public class AdminController {
         return ResponseEntity.ok(usernames);
     }
 
-    @PatchMapping("user/{id}")
+    @PutMapping("user/{id}")
     public ResponseEntity<HttpStatus> updateUser(@RequestBody User user){
        userServiceImpl.save(user);
        return ResponseEntity.ok(HttpStatus.OK);
