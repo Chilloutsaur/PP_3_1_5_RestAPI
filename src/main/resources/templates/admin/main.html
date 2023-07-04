@@ -167,7 +167,6 @@
         }
 
 
-
         $('.editButton').on('click', async function (e) {
             e.preventDefault()
             response = await fetch(userByIdURL + this.id)
@@ -195,13 +194,55 @@
 
         })
 
+        $('.deleteButton').on('click', async function (e) {
+            e.preventDefault()
+            response = await fetch(userByIdURL + this.id)
+            let userById = await response.json()
+
+            $('#deleteId').val(userById.id)
+            $('#deleteUsername').val(userById.username)
+            $('#deleteEmail').val(userById.email)
+            $('#deletePassword').val(userById.password)
+            userById.roles.forEach(role => {
+                $('#editRole option[value=' + role.id + ']').prop('selected', true)
+            })
+            let deleteForm = $("#deleteForm")
+
+            deleteForm.unbind('submit')
+
+            deleteForm.on('submit', async function (event) {
+                console.log("deleteform")
+                event.preventDefault()
+                await onDeleteSubmit(event, userById)
+            })
+            console.log("deleteModal")
+            $("#deleteModal").modal('show')
+        })
     }
+
+    async function onDeleteSubmit(event, user) {
+        console.log("ondeleteSub")
+        const form = $(event.target)
+        const json = convertFormToJSON(form)
+        json.id = user.id
+        console.log(json)
+        await fetch(userByIdURL + user.id, {
+            method: "DELETE",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(json)
+        })
+        $('#deleteModal').modal("hide")
+        await tableData()
+    }
+
     async function onEditSubmit(event, user) {
         event.preventDefault()
         const form = $(event.target)
         const json = convertFormToJSON(form) // не берет id  с формы
         json.id = user.id
-        console.log(json)
         await fetch(userByIdURL + user.id, {
             method: "PUT",
             headers: {
@@ -252,12 +293,8 @@
             await tableData()
 
 
-
         })
     }
-
-
-
 
 
     async function onNewUserSubmit(event) {
