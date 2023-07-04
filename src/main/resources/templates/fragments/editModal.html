@@ -10,6 +10,8 @@
                     </button>
                 </div>
                 <div class="modal-body">
+
+
                     <form class="text-center mx-auto" style="font-weight: bold; max-width: 300px" th:method="PUT"
                           id="editForm" action="">
                         <section>
@@ -17,24 +19,27 @@
                             <fieldset disabled>
                                 <div class="form-group">
                                     <label for="editId">ID</label>
-                                    <input type="text" class="form-control" id="editId" placeholder="ID">
+                                    <input type="text" class="form-control" id="editId" name="id" placeholder="ID">
                                 </div>
                             </fieldset>
 
                             <div class="form-group">
                                 <label for="editUsername">Username</label>
-                                <input type="text" class="form-control" id="editUsername" placeholder="Username">
+                                <input type="text" class="form-control" id="editUsername" placeholder="Username"
+                                       name="username">
                             </div>
 
                             <div class="form-group">
                                 <label for="editEmail">Email</label>
-                                <input type="text" class="form-control" id="editEmail" placeholder="Email">
+                                <input type="text" class="form-control" id="editEmail" placeholder="Email"
+                                       name="email">
                             </div>
 
 
                             <div class="form-group">
                                 <label for="editPassword" id="formPassword2">Password</label>
-                                <input type="password" class="form-control" id="editPassword" placeholder="Password">
+                                <input type="password" class="form-control" id="editPassword" placeholder="Password"
+                                       name=password>
                             </div>
 
                             <div class="form-group">
@@ -45,7 +50,7 @@
 
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary" id="editBtm">Edit</button>
+                                <button type="submit" class="btn btn-primary" id="editBtn">Edit</button>
                             </div>
                         </section>
                     </form>

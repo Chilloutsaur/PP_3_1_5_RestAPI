@@ -31,6 +31,7 @@ public class AdminController {
     @PostMapping("/newUser")
     public ResponseEntity<HttpStatus> addUser(@RequestBody User user) {
         userServiceImpl.save(user);
+        System.out.println(user);
         return ResponseEntity.ok(HttpStatus.CREATED);
     }
 

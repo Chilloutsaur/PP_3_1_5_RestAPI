@@ -89,7 +89,7 @@
                         <div class="form-group">
                             <label for="newEmail">Email</label>
                             <input type="text" class="form-control" id="newEmail" placeholder="Email"
-                                   name="Email">
+                                   name="email">
                         </div>
                         <div class="form-group">
                             <label for="newPassword" id="formPassword">Password</label>
@@ -139,7 +139,9 @@
     let usersTableBtn;
 
     const newUserURL = "http://localhost:8080/admin/newUser"
+
     const userByIdURL = "http://localhost:8080/admin/user/"
+
 
     function getRoles(user) {
         return user.roles.map(role => role['name'])
@@ -150,12 +152,11 @@
         let response = await fetch(usersURL)
         let users = await response.json()
 
-        $('#tbody').empty()
+        $("#tbody").empty()
 
         for (let user of users) {
-            let editButton = `<button type="button" class="btn btn-info editButton" id=editBtn${user.id}"> Edit </button>`;
-            let deleteButton = `<button type="button" class="btn btn-danger deleteButton" id="deleteBtn${user.id}"> Delete</button>`;
-
+            let editButton = `<button type="button" class="btn btn-info editButton" id="${user.id}"> Edit </button>`;
+            let deleteButton = `<button type="button" class="btn btn-danger deleteButton" id="${user.id}"> Delete</button>`;
             $('#tbody').append(`<tr>
             <td> ${user.id} </td>
             <td> ${user.username} </td>
@@ -165,19 +166,55 @@
             <td> ${deleteButton}</td></tr>`)
         }
 
-        roles.forEach(role => {
-            $('#editRole').append($("<option></option>").text(role.name).val(role.id))
-            $('#deleteRole').append($("<option></option>").text(role.name).val(role.id))
-            $('#newRole').append($("<option></option>").text(role.name).val(role.id))
+
+
+        $('.editButton').on('click', async function (e) {
+            e.preventDefault()
+            response = await fetch(userByIdURL + this.id)
+            let userById = await response.json()
+
+            $('#editId').val(userById.id)
+            $('#editUsername').val(userById.username)
+            $('#editEmail').val(userById.email)
+            $('#editPassword').val("")
+
+            //MAGIC
+            userById.roles.forEach(role => {
+                $('#editRole option[value=' + role.id + ']').prop('selected', true)
+            })
+            $('#editForm').on('submit', async function (event) {
+                await onEditSubmit(event, userById)
+            })
+            $('#editModal').modal()
+
         })
+
     }
+    async function onEditSubmit(event, user) {
+        event.preventDefault()
+        const form = $(event.target)
+        const json = convertFormToJSON(form) // не берет id  с формы
+        json.id = user.id
+        console.log(json)
+        await fetch(userByIdURL + user.id, {
+            method: "PUT",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(json)
+        })
+        $('#editModal').modal("hide")
+        await tableData()
+    }
+
+
     async function main() {
         let response = await fetch(principalURL)
         principal = await response.json()
 
         response = await fetch(rolesURL)
         roles = await response.json()
-
 
         $("document").ready(async function () {
             $('.nav-username').append(principal.username)
@@ -198,36 +235,63 @@
             })
             usersTableOnClick()
 
+            roles.forEach(role => {
+                $('#editRole').append($("<option></option>").text(role.name).val(role.id))
+                $('#deleteRole').append($("<option></option>").text(role.name).val(role.id))
+                $('#newRole').append($("<option></option>").text(role.name).val(role.id))
+            })
+
+
             $('#newUserForm').on('submit', e => onNewUserSubmit(e))
             await tableData()
+
+
+
         })
     }
+
+
+
+
 
     async function onNewUserSubmit(event) {
         event.preventDefault()
         const form = $(event.target)
         const json = convertFormToJSON(form)
-
         await fetch(newUserURL, {
             method: "POST",
-            headers:{
+            headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(json)
         })
-
         $('#newUserForm').trigger('reset')
         await tableData()
         usersTableOnClick()
     }
 
 
+    function newUserOnClick() {
+        usersTableBtn.removeClass('active')
+        newUserBtn.addClass('active')
+        $('#usersTable').hide()
+        $('#newUser').show()
+    }
+
+    function usersTableOnClick() {
+        newUserBtn.removeClass('active')
+        usersTableBtn.addClass('active')
+        $('#usersTable').show()
+        $('#newUser').hide()
+    }
+
+
     function convertFormToJSON(form) {
-        const  array = $(form).serializeArray()
+        const array = $(form).serializeArray()
         const json = {}
         json.roles = []
-        let role = {'id' : 0}
+        let role = {'id': 0}
         $.each(array, function () {
             if (this.name === "roles") {
                 role.id = this.value
@@ -237,30 +301,8 @@
             }
 
         })
-        console.log(json)
         return json;
     }
-
-
-
-
-
-    function usersTableOnClick() {
-        newUserBtn.removeClass('active')
-        usersTableBtn.addClass('active')
-        $('#usersTable').show()
-        $('#newUser').hide()
-    }
-
-    function newUserOnClick() {
-        usersTableBtn.removeClass('active')
-        newUserBtn.addClass('active')
-        $('#usersTable').hide()
-        $('#newUser').show()
-
-
-    }
-
 
     main()
 </script>
