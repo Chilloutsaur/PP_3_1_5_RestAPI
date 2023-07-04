@@ -182,9 +182,15 @@
             userById.roles.forEach(role => {
                 $('#editRole option[value=' + role.id + ']').prop('selected', true)
             })
-            $('#editForm').on('submit', async function (event) {
+
+            let editForm = $("#editForm")
+            editForm.unbind('submit')
+
+            editForm.on('submit', async function (event) {
                 await onEditSubmit(event, userById)
             })
+
+
             $('#editModal').modal()
 
         })
