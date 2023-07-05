@@ -20,8 +20,8 @@
             <div class="sidebar-sticky ">
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a th:if="${admin}" href="/admin" >
-                            <button type="submit" class="btn btn-white w-100 text-left text-primary">Admin</button>
+                        <a href="/admin">
+                        <button type="submit" class="btn btn-white w-100 text-left text-primary" id="adminBtn">Admin</button>
                         </a>
                     </li>
                     <li class="nav-item">
@@ -46,11 +46,8 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td th:text="${principal.getId}">
-                            <td th:text="${principal.getUsername()}">
-                            <td th:text="${principal.getEmail()}">
-                            <td th:text="${principal.getAuthorities()}">
+                        <tr id="trBody">
+
                         </tr>
                         </tbody>
                     </table>
@@ -59,8 +56,6 @@
 
         </main>
     </div>
-
-
 </div>
 </body>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
@@ -72,5 +67,34 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
+
+<script>
+    const principalURL = "http://localhost:8080/principal";
+    let principal;
+
+    function getRoles(user) {
+        return user.roles.map(role => role['name'])
+    }
+
+
+
+    async function userData() {
+        let response = await fetch(principalURL)
+        principal = await response.json()
+        console.log(principal)
+        $('document').ready(await function() {
+            $('.nav-username').append(principal.username)
+            $('.nav-roles').append(getRoles(principal))
+            $('#trBody').append(`<td> ${principal.id} </td>
+                                 <td> ${principal.username}</td>
+                                 <td> ${principal.email}</td>
+                                 <td> ${getRoles(principal)}</td>`)
+            let AdminLink = $('#adminBtn')
+            principal.roles.forEach(r => r.name === "ROLE_ADMIN" ? AdminLink.show() : AdminLink.hide())
+        })
+    }
+    userData()
+
+</script>
 
 </html>

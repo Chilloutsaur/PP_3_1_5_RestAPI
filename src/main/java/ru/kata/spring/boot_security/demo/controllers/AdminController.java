@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-@RequestMapping("/admin")
 public class AdminController {
 
     @Autowired
@@ -28,26 +27,25 @@ public class AdminController {
     @Autowired
     private RoleServiceImpl roleServiceImpl;
 
-    @PostMapping("/newUser")
+    @PostMapping("/admin/newUser")
     public ResponseEntity<HttpStatus> addUser(@RequestBody User user) {
-        userServiceImpl.save(user);
-        System.out.println(user);
+        userServiceImpl.saveUser(user);
         return ResponseEntity.ok(HttpStatus.CREATED);
     }
 
-    @GetMapping("/user/{id}")
+    @GetMapping("admin/user/{id}")
     public ResponseEntity<User> getUserById(@PathVariable("id") Long id) {
         User userById = userServiceImpl.findUserById(id);
         return ResponseEntity.ok(userById);
     }
 
-    @GetMapping("/users")
+    @GetMapping("admin/users")
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userServiceImpl.getAllUsers();
         return ResponseEntity.ok(users);
     }
 
-    @GetMapping("/roles")
+    @GetMapping("admin/roles")
     public ResponseEntity<List<Role>> getRoles() {
         List<Role> roles = roleServiceImpl.getRolesList();
         return ResponseEntity.ok(roles);
@@ -60,7 +58,14 @@ public class AdminController {
         return ResponseEntity.ok(principal);
     }
 
-    @GetMapping("/usernames")
+    @GetMapping("admin/principal")
+    public ResponseEntity<User> getPrincipalAdmin() {
+        User principal = (User) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+        return ResponseEntity.ok(principal);
+    }
+
+    @GetMapping("admin/usernames")
     public ResponseEntity<List<String>> usernamesList() {
         List<String> usernames = new ArrayList<>();
         for (User us : userServiceImpl.getAllUsers()) {
@@ -69,14 +74,14 @@ public class AdminController {
         return ResponseEntity.ok(usernames);
     }
 
-    @PutMapping("user/{id}")
+    @PutMapping("admin/user/{id}")
     public ResponseEntity<HttpStatus> updateUser(@RequestBody User user){
-       userServiceImpl.save(user);
+       userServiceImpl.saveUser(user);
        return ResponseEntity.ok(HttpStatus.OK);
     }
 
 
-    @DeleteMapping("/user/{id}")
+    @DeleteMapping("admin/user/{id}")
     public ResponseEntity<HttpStatus> deleteUser(@PathVariable("id") Long id) {
         userServiceImpl.deleteUser(id);
         return ResponseEntity.ok(HttpStatus.OK);

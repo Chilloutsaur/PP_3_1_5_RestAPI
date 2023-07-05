@@ -30,11 +30,6 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    public void save(User user) {
-        userRepository.save(user);
-    }
-
-
     public void init() {
         roleServiceImpl.saveRole(new Role("ROLE_ADMIN"));
         roleServiceImpl.saveRole(new Role("ROLE_USER"));
